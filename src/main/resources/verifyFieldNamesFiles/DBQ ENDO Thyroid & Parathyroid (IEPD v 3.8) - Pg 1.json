@@ -1,0 +1,233 @@
+{
+  "dbqName": "ThyroidAndParathyroidConditionsFormType",
+  "dbqVersion": "3.8",
+  "rulesVersion": "0",
+  "rules": [
+   {
+      "dbqField": "ENDO_Thyroid_Cover_ExamRequest_ENUM",
+      "validationRules": [
+      {
+        "requiredValue": "Yes",
+        "valueType": "ENUM",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_ENUM] == \"Yes\") && ([ENDO_Thyroid_Cover_ExamRequest_ENUM] != \"\")"
+      },
+      {
+        "requiredValue": "No",
+        "valueType": "ENUM",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_ENUM] == \"No\") && ([ENDO_Thyroid_Cover_ExamRequest_ENUM] == \"\")"
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_ExamRequest_InPersonExamination_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_InPersonExamination_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_ExamRequest_InPersonExamination_BOOL] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_InPersonExamination_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_ExamRequest_InPersonExamination_BOOL] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_ExamRequest_TeleHealth_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_TeleHealth_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_ExamRequest_TeleHealth_BOOL] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_TeleHealth_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_ExamRequest_TeleHealth_BOOL] == \"\") "
+      }
+     ]
+    },
+
+    {
+      "dbqField": "ENDO_Thyroid_Cover_ExamRequest_RecordsReviewed_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_RecordsReviewed_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_ExamRequest_RecordsReviewed_BOOL] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_RecordsReviewed_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_ExamRequest_RecordsReviewed_BOOL] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_ExamRequest_Other_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_Other_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_ExamRequest_Other_STR] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ExamRequest_Other_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_ExamRequest_Other_STR] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_ACE_WithoutInterview_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ACE_WithoutInterview_BOOL] == \"true\")  && (ENDO_Thyroid_Cover_ACE_WithInterview_BOOL] == \"false\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_ACE_WithInterview_BOOL] == \"true\") && ([ENDO_Thyroid_Cover_ACE_WithoutInterview_BOOL]  == \"false\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_ACE_WithInterview_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+           "rule": "([ENDO_Thyroid_Cover_ACE_WithInterview_BOOL] == \"true\") && ([ENDO_Thyroid_Cover_ACE_WithoutInterview_BOOL]  == \"false\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+          "rule": "([ENDO_Thyroid_Cover_ACE_WithoutInterview_BOOL] == \"true\") && (ENDO_Thyroid_Cover_ACE_WithInterview_BOOL] == \"false\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_EvidenceReview_NotRequested_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_NotRequested_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_EvidenceReview_NotRequested_BOOL] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_NotRequested_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_EvidenceReview_NotRequested_BOOL] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_EvidenceReview_NoRecords_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_NoRecords_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_EvidenceReview_NoRecords_BOOL] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_NoRecords_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_EvidenceReview_NoRecords_BOOL] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_EvidenceReview_CFile_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_CFile_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_EvidenceReview_CFile_BOOL] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_CFile_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_EvidenceReview_CFile_BOOL] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_EvidenceReview_EFolder_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_EFolder_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_EvidenceReview_EFolder_BOOL] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_EFolder_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_EvidenceReview_EFolder_BOOL] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_EvidenceReview_CPRS_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_CPRS_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_EvidenceReview_CPRS_BOOL] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_CPRS_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_EvidenceReview_CPRS_BOOL] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_EvidenceReview_Other_BOOL",
+      "validationRules": [
+      {
+        "requiredValue": "true",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_Other_BOOL] == \"true\")  && ([ENDO_Thyroid_Cover_EvidenceReview_Other_STR] != \"\") "
+      },
+      {
+        "requiredValue": "false",
+        "valueType": "BOOLEAN",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_Other_BOOL] == \"false\") && ([ENDO_Thyroid_Cover_EvidenceReview_Other_STR] == \"\") "
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_EvidenceReview_Other_STR",
+      "validationRules": [
+      {
+        "requiredValue": "Yes",
+        "valueType": "STRING",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_Other_STR] == \"true\") && ([ENDO_Thyroid_Cover_EvidenceReview_Other_STR] != \"\")"
+      },
+      {
+        "requiredValue": "No",
+        "valueType": "STRING",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_Other_STR] == \"false\") && ([ENDO_Thyroid_Cover_EvidenceReview_Other_STR] == \"\")"
+      }
+     ]
+    },
+    {
+      "dbqField": "ENDO_Thyroid_Cover_EvidenceReview_Comments_STR",
+      "validationRules": [
+      {
+        "requiredValue": "Yes",
+        "valueType": "STRING",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_Comments_STR] == \"true\") && ([ENDO_Thyroid_Cover_EvidenceReview_Comments_STR] != \"\")"
+      },
+      {
+        "requiredValue": "No",
+        "valueType": "STRING",
+        "rule": "([ENDO_Thyroid_Cover_EvidenceReview_Comments_STR] == \"false\") && ([ENDO_Thyroid_Cover_EvidenceReview_Comments_STR] == \"\")"
+      }
+     ]
+    }
+  ]
+}
