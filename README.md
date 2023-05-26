@@ -7,7 +7,8 @@ This is a toolkit of utilities to assist with QA and Development efforts regardi
 ### VerifyFieldNames
 1. Extracts DBQ field names from both the XSD schema file and the manually-generated JSON validation rules file. 
 2. A list of field names is generated for each file and listed in the console output for reference along with a count.
-3. When the matching process completes, a report is displayed in the console with results for each file.
+3. In addition, enumerated fields are listed as well. The field names are also appeneded with "(type:enum)"
+4. When the matching process completes, a report is displayed in the console with results for each file.
 
 Refer to src/test/java under com.smiller.dbq.tools and the Java main class TestVerifyFieldNames as an example of running this process.
 
