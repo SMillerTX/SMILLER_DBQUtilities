@@ -7,6 +7,7 @@ import com.smiller.dbq.tools.utils.JacksonJsonUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.namespace.NamespaceContext;
@@ -17,6 +18,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,12 +34,50 @@ public class VerifyFieldNames {
     public static void process(String xsdFilePath, String dbqRulesFilePath) throws Exception {
         try {
 
+            String enumSuffix = " (type:enum)";
             //these are TreeSets....sorted alphabetically
-            Set<String> rulesFileFieldNames = retrieveRuleFileFieldNames(dbqRulesFilePath);
-            Set<String> xsdFileFieldNames = retrieveXsdFileNames(xsdFilePath);
+            TreeSet<String> rulesFileFieldNames = retrieveRuleFileFieldNames(dbqRulesFilePath);
+            TreeSet<String> xsdFileFieldNames = retrieveXsdFileNames(xsdFilePath);
+            TreeSet<String> xsdFileEnumerationFields = retrieveXsdEnumerationFields(xsdFilePath);
 
             int rulesFileFieldNamesCount = rulesFileFieldNames.size();
             int xsdFileFieldNamesCount = xsdFileFieldNames.size();
+
+            //need to update rulesFileFieldNames by tagging those which are enumeration fields
+            for(String xsdFileEnumerationField : xsdFileEnumerationFields) {
+                xsdFileFieldNames.remove(xsdFileEnumerationField);
+                xsdFileFieldNames.add(xsdFileEnumerationField + enumSuffix);
+            }
+
+
+            //need to update xsdFileFieldNames by tagging those which are enumeration fields
+            for(String xsdFileEnumerationField : xsdFileEnumerationFields) {
+                if(rulesFileFieldNames.contains(xsdFileEnumerationField)) {
+                    rulesFileFieldNames.remove(xsdFileEnumerationField);
+                    rulesFileFieldNames.add(xsdFileEnumerationField + enumSuffix);
+                }
+            }
+
+            out("");
+            out("---- RULES FILE FIELD NAMES (total: " + rulesFileFieldNames.size() + ") -------------------------------------------------------");
+            for(String s : rulesFileFieldNames) {
+                out(s);
+            }
+            out("-----------------------------------------");
+
+            out("");
+            out("---- XSD FILE FIELD NAMES (total:" + xsdFileFieldNames.size() + ") --------------------------------------------------------------");
+            for(String s : xsdFileFieldNames) {
+                out(s);
+            }
+            out("-------------------------------------------");
+
+            out("");
+            out("---- XSD FILE ENUMERATION FIELDS (total:" + xsdFileEnumerationFields.size() + ") ------------------------------------------------");
+            for(String s : xsdFileEnumerationFields) {
+                out(s);
+            }
+            out("-------------------------------------------");
 
             //if there is a matching field name, remove it from the Set of fieldNames for each file.
             Set<String> matchedFields = new HashSet<>();
@@ -59,8 +99,8 @@ public class VerifyFieldNames {
 
     }
 
-    private static Set<String> retrieveRuleFileFieldNames(String dbqRulesFilePath) throws Exception {
-        Set<String> rulesFileFieldNames = new TreeSet<>();
+    private static TreeSet<String> retrieveRuleFileFieldNames(String dbqRulesFilePath) throws Exception {
+        TreeSet<String> rulesFileFieldNames = new TreeSet<>();
         String dbqRulesJson = FileUtils.readFileToString(retrieveFile(dbqRulesFilePath), "UTF-8");
         DBQRules dbqRules = JacksonJsonUtil.jsonToPOJO(dbqRulesJson, DBQRules.class);
         for(Rule rule : dbqRules.getRules()) {
@@ -69,17 +109,76 @@ public class VerifyFieldNames {
             }
         }
 
-        out("---- RULES FILE FIELD NAMES (total: " + rulesFileFieldNames.size() + ") ----");
-        for(String s : rulesFileFieldNames) {
-            out(s);
-        }
-        out("--------------------------------");
 
         return rulesFileFieldNames;
     }
 
-    private static Set<String> retrieveXsdFileNames(String xsdFilePath) throws Exception {
-        Set<String> xsdFileFieldNames = new TreeSet<>();
+    private static TreeSet<String> retrieveXsdFileNames(String xsdFilePath) throws Exception {
+        TreeSet<String> xsdFileFieldNames = new TreeSet<>();
+
+        StringBuffer expression = new StringBuffer("//xs:element[");
+        expression.append("not(@name='Value') and ");
+        expression.append("not(@name='Metadata') and ");
+        expression.append("not(@name='code') and ");
+        expression.append("not(@name='codeSystem') and ");
+        expression.append("not(@name='version') and ");
+        expression.append("not(@name='source')");
+        expression.append("]");
+        expression.append("/self::node()");
+        NodeList nodeList = getNodeList(xsdFilePath, expression.toString());
+
+        Node fieldNameNode = null;
+        for(int i = 0; i < nodeList.getLength(); i++) {
+            String fieldName = nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue();
+            xsdFileFieldNames.add(fieldName);
+        }
+
+        return xsdFileFieldNames;
+    }
+
+    private static TreeSet<String> retrieveXsdEnumerationFields(String xsdFilePath) throws IOException {
+        TreeSet<String> xsdFileEnumerationFields = new TreeSet<>();
+
+        StringBuffer expression = new StringBuffer("//xs:element[");
+        expression.append("not(@name='Value') and ");
+        expression.append("not(@name='Metadata') and ");
+        expression.append("not(@name='code') and ");
+        expression.append("not(@name='codeSystem') and ");
+        expression.append("not(@name='version') and ");
+        expression.append("not(@name='source')");
+        expression.append("]");
+        expression.append("/descendant::xs:enumeration/ancestor::xs:element[not(@name='Value')]");
+        NodeList nodeList = getNodeList(xsdFilePath, expression.toString());
+
+        Node fieldNameNode = null;
+        for(int i = 0; i < nodeList.getLength(); i++) {
+            fieldNameNode = nodeList.item(i);
+            String fieldName = fieldNameNode.getNodeName();
+            String fieldValue = fieldNameNode.getAttributes().getNamedItem("name").getNodeValue();
+            xsdFileEnumerationFields.add(nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+        }
+
+        return xsdFileEnumerationFields;
+    }
+
+
+    private static void reportUnmatchedFieldNames(String header, String filePath, int initialSize, Set<String> fieldNames) {
+        out(" ");
+        out("****************************************************************************************************************");
+        out("***** UNMATCHED " + header + "\"" + filePath + "\"");
+        if(fieldNames.isEmpty()) {
+            out("NO UNMATCHED FIELDS OUT OF " + initialSize + " :-) DO THE FORBIDDEN SACRED DANCE OF PROGRAMMER/QA MERRIMENT!");
+        } else {
+            out("***** TOTAL:" + fieldNames.size() + " OUT OF " + initialSize);
+            out("*****");
+            for (String fieldName : fieldNames) {
+                out(fieldName);
+            }
+        }
+        out("*****************************************************************************************************************");
+    }
+
+    private static NodeList getNodeList(String xsdFilePath, String expression) throws IOException {
         FileInputStream fileIS = null;
         try {
             fileIS = new FileInputStream(retrieveFile(xsdFilePath));
@@ -105,43 +204,14 @@ public class VerifyFieldNames {
                     throw new UnsupportedOperationException();
                 }
             });
-            String expression = "//xs:element[not(@name='Value') and not(@name='Metadata') and not(@name='code') and not(@name='codeSystem') and not(@name='version') and not(@name='source')]";
-            NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
-
-            for(int i = 0; i < nodeList.getLength(); i++) {
-                xsdFileFieldNames.add(nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue());
-            }
-
-            out("---- XSD FILE FIELD NAMES (total:" + xsdFileFieldNames.size() + ") ----");
-            for(String s : xsdFileFieldNames) {
-                out(s);
-            }
-            out("-------------------------------------------");
-
+            return (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
         }catch(Exception e) {
             e.printStackTrace();
         }finally {
             if(fileIS != null)
                 fileIS.close();
         }
-
-        return xsdFileFieldNames;
-    }
-
-    private static void reportUnmatchedFieldNames(String header, String filePath, int initialSize, Set<String> fieldNames) {
-        out(" ");
-        out("***********************************************************************************");
-        out("***** UNMATCHED " + header + "\"" + filePath + "\"");
-        if(fieldNames.isEmpty()) {
-            out("NO UNMATCHED FIELDS OUT OF " + initialSize + " :-) DO THE FORBIDDEN SACRED DANCE OF PROGRAMMER/QA MERRIMENT!");
-        } else {
-            out("***** TOTAL:" + fieldNames.size() + " OUT OF " + initialSize);
-            out("*****");
-            for (String fieldName : fieldNames) {
-                out(fieldName);
-            }
-        }
-        out("************************************************************************************");
+        return null;
     }
 
     private static File retrieveFile(String path) throws Exception {
